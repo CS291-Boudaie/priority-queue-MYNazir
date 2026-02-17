@@ -50,36 +50,64 @@ class MinHeap:
         return len(self.data) == 0
 
     def peek(self):
-        # TODO: Return (priority, item) but do NOT remove
-        # If empty, return None (or raise an error)
-        pass
+        if self.is_empty():
+            return None
+        return self.data[0]
 
     def add(self, priority, item):
-        # TODO: Add (priority, item) to end of list
-        # Then bubble it UP into correct position
-        pass
+        self.data.append((priority, item))
+        self._bubble_up(len(self.data) - 1)
 
     def pop_min(self):
-        # TODO: Remove and return the smallest element (priority, item)
-        # Steps:
+        # Remove and return the smallest element (priority, item)
+        if self.is_empty():
+            return None
+            
+        # If only one element, just pop and return it
+        if len(self.data) == 1:
+            return self.data.pop()
+            
         # 1) swap root with last element
+        self.data[0], self.data[-1] = self.data[-1], self.data[0]
         # 2) pop last element (former root)
+        min_elem = self.data.pop()
         # 3) bubble DOWN new root
-        pass
+        self._bubble_down(0)
+        return min_elem
 
     def _bubble_up(self, idx):
-        # TODO: Implement
         # Keep swapping this node with its parent while it has a smaller priority.
-        # parent index = (idx - 1) // 2
-        # Stop when you reach the root OR parent already has <= priority.
-        pass
+        while idx > 0:
+            parent = (idx - 1) // 2
+            # Compare priorities (index 0 in the stored tuple)
+            if self.data[idx][0] < self.data[parent][0]:
+                self.data[idx], self.data[parent] = self.data[parent], self.data[idx]
+                idx = parent
+            else:
+                break
 
     def _bubble_down(self, idx):
         # Keep swapping this node downward until the heap property is restored.
-        # left child = 2*idx + 1, right child = 2*idx + 2
-        # Find the smaller child, then swap if current priority is bigger.
-        # Stop when no children exist OR current is <= both children.
-        pass
+        n = len(self.data)
+        while True:
+            left = 2 * idx + 1
+            right = 2 * idx + 2
+            smallest = idx
+
+            # Check left child
+            if left < n and self.data[left][0] < self.data[smallest][0]:
+                smallest = left
+            # Check right child
+            if right < n and self.data[right][0] < self.data[smallest][0]:
+                smallest = right
+
+            # If a child is smaller, swap down
+            if smallest != idx:
+                self.data[idx], self.data[smallest] = self.data[smallest], self.data[idx]
+                idx = smallest
+            else:
+                break
+
 
 
 # Once you have a min heap, the priority queue is pretty straightforward. 
